@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgriFlow · Account</title>
+<style>
+:root{--green:#16794b;--dark:#12372b;--pale:#f2f8f4;--line:#d8e6dc;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#eef7f0,#f8fbf8);color:#17352a;min-height:100vh;display:grid;place-items:center;padding:20px}
+.wrap{width:min(960px,100%);display:grid;grid-template-columns:1fr 1fr;background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 18px 60px #12372b14}
+.hero{background:linear-gradient(150deg,#0e5737,#178453);color:#fff;padding:42px;display:flex;flex-direction:column;justify-content:space-between;min-height:570px}
+.logo{font-size:30px;font-weight:800;letter-spacing:-.5px}.leaf{font-size:40px}.hero h1{font-size:clamp(30px,4vw,44px);line-height:1.12;margin:30px 0 12px}.hero p{color:#e1f3e8;line-height:1.6}.features{display:grid;gap:12px;margin-top:28px}.feature{background:#ffffff16;border:1px solid #ffffff30;border-radius:12px;padding:12px}
+.formside{padding:38px;display:flex;flex-direction:column;justify-content:center}.toprow{display:flex;justify-content:flex-end}.lang{padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#17352a}
+h2{margin:18px 0 6px;font-size:28px}.sub{color:#64766b;margin:0 0 22px}label{display:block;font-weight:650;font-size:14px;margin:14px 0 6px}input,select{width:100%;padding:12px 13px;border:1px solid #cad9ce;border-radius:10px;font:inherit;background:#fff}input:focus,select:focus{outline:3px solid #16794b20;border-color:var(--green)}button{width:100%;border:0;border-radius:11px;padding:13px 16px;background:var(--green);color:#fff;font:inherit;font-weight:750;margin-top:20px;cursor:pointer}button:hover{background:#105f39}.switch{text-align:center;margin-top:18px;color:#5b6c61}.switch a{color:var(--green);font-weight:700;text-decoration:none}.flash{padding:10px 12px;border-radius:10px;background:#fff0ef;color:var(--red);font-size:14px;margin:10px 0}.hint{font-size:12px;color:#718076;margin-top:10px}
+@media(max-width:720px){.wrap{grid-template-columns:1fr}.hero{min-height:auto;padding:26px}.hero h1{margin-top:20px}.features{grid-template-columns:1fr 1fr}.formside{padding:26px}.logo{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div><div class="logo">🌱 AgriFlow</div><h1 data-i18n="heroTitle">Smart irrigation, made simple.</h1><p data-i18n="heroText">Monitor water flow and manage irrigation from one easy dashboard.</p></div>
+    <div class="features"><div class="feature">💧 <span data-i18n="feature1">Live flow monitoring</span></div><div class="feature">⏱️ <span data-i18n="feature2">Timed irrigation control</span></div><div class="feature">🌐 <span data-i18n="feature3">ESP32 connectivity</span></div></div>
+  </section>
+  <section class="formside">
+    <div class="toprow"><select id="language" class="lang" aria-label="Language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option></select></div>
+    <h2 data-i18n="{{ 'registerTitle' if mode == 'register' else 'loginTitle' }}">{{ 'Create your account' if mode == 'register' else 'Welcome back' }}</h2>
+    <p class="sub" data-i18n="{{ 'registerSub' if mode == 'register' else 'loginSub' }}">{{ 'Register to use AgriFlow.' if mode == 'register' else 'Log in to open your irrigation dashboard.' }}</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="flash">{{ message }}</div>{% endfor %}{% endwith %}
+    <form method="post">
+      {% if mode == 'register' %}
+      <label for="name" data-i18n="nameLabel">Full name</label><input id="name" name="name" autocomplete="name" required minlength="2" maxlength="100" placeholder="Your name">
+      {% endif %}
+      <label for="email" data-i18n="emailLabel">Email address</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com">
+      <label for="password" data-i18n="passwordLabel">Password</label><input id="password" name="password" type="password" autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}" required {% if mode == 'register' %}minlength="8"{% endif %} placeholder="{{ 'At least 8 characters' if mode == 'register' else 'Your password' }}">
+      <input type="hidden" name="lang" id="formLang" value="en">
+      <button type="submit" data-i18n="{{ 'registerButton' if mode == 'register' else 'loginButton' }}">{{ 'Create account' if mode == 'register' else 'Log in' }}</button>
+    </form>
+    <div class="switch">{% if mode == 'register' %}<span data-i18n="haveAccount">Already have an account?</span> <a href="{{ url_for('login') }}" data-i18n="loginLink">Log in</a>{% else %}<span data-i18n="noAccount">New to AgriFlow?</span> <a href="{{ url_for('register') }}" data-i18n="registerLink">Create an account</a>{% endif %}</div>
+    <div class="hint" data-i18n="securityHint">Use a unique password. Your password is stored as a secure hash.</div>
+  </section>
+</div>
+<script>
+const translations={
+en:{heroTitle:"Smart irrigation, made simple.",heroText:"Monitor water flow and manage irrigation from one easy dashboard.",feature1:"Live flow monitoring",feature2:"Timed irrigation control",feature3:"ESP32 connectivity",registerTitle:"Create your account",loginTitle:"Welcome back",registerSub:"Register to use AgriFlow.",loginSub:"Log in to open your irrigation dashboard.",nameLabel:"Full name",emailLabel:"Email address",passwordLabel:"Password",registerButton:"Create account",loginButton:"Log in",haveAccount:"Already have an account?",loginLink:"Log in",noAccount:"New to AgriFlow?",registerLink:"Create an account",securityHint:"Use a unique password. Your password is stored as a secure hash."},
+hi:{heroTitle:"स्मार्ट सिंचाई, अब आसान।",heroText:"एक आसान डैशबोर्ड से पानी का बहाव देखें और सिंचाई नियंत्रित करें।",feature1:"पानी के बहाव की लाइव निगरानी",feature2:"समय के अनुसार सिंचाई नियंत्रण",feature3:"ESP32 कनेक्टिविटी",registerTitle:"अपना खाता बनाएं",loginTitle:"वापस स्वागत है",registerSub:"AgriFlow इस्तेमाल करने के लिए रजिस्टर करें।",loginSub:"सिंचाई डैशबोर्ड खोलने के लिए लॉगिन करें।",nameLabel:"पूरा नाम",emailLabel:"ईमेल पता",passwordLabel:"पासवर्ड",registerButton:"खाता बनाएं",loginButton:"लॉगिन करें",haveAccount:"पहले से खाता है?",loginLink:"लॉगिन करें",noAccount:"AgriFlow पर नए हैं?",registerLink:"खाता बनाएं",securityHint:"अलग और मजबूत पासवर्ड रखें। पासवर्ड सुरक्षित हैश के रूप में सेव होता है।"},
+mr:{heroTitle:"स्मार्ट सिंचन, आता सोपे.",heroText:"एका सोप्या डॅशबोर्डवरून पाण्याचा प्रवाह पाहा आणि सिंचन नियंत्रित करा.",feature1:"पाण्याच्या प्रवाहाचे थेट निरीक्षण",feature2:"वेळेनुसार सिंचन नियंत्रण",feature3:"ESP32 कनेक्टिव्हिटी",registerTitle:"आपले खाते तयार करा",loginTitle:"पुन्हा स्वागत आहे",registerSub:"AgriFlow वापरण्यासाठी नोंदणी करा.",loginSub:"सिंचन डॅशबोर्ड उघडण्यासाठी लॉगिन करा.",nameLabel:"पूर्ण नाव",emailLabel:"ईमेल पत्ता",passwordLabel:"पासवर्ड",registerButton:"खाते तयार करा",loginButton:"लॉगिन करा",haveAccount:"आधीच खाते आहे?",loginLink:"लॉगिन करा",noAccount:"AgriFlow वर नवीन आहात?",registerLink:"खाते तयार करा",securityHint:"वेगळा आणि मजबूत पासवर्ड वापरा. पासवर्ड सुरक्षित हॅश स्वरूपात साठवला जातो."}
+};
+const lang=document.getElementById('language');
+function setLang(code){const dict=translations[code]||translations.en;document.documentElement.lang=code;document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(dict[key])el.textContent=dict[key]});document.getElementById('formLang').value=code;localStorage.setItem('agriflowLang',code)}
+lang.addEventListener('change',()=>setLang(lang.value));const saved=localStorage.getItem('agriflowLang')||'en';lang.value=saved;setLang(saved);
+</script>
+</body></html>

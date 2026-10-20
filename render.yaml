@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: agriflow-dashboard
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    plan: free
+    envVars:
+      - key: AGRIFLOW_SIMULATION
+        value: "true"
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: AGRIFLOW_DEVICE_TOKEN
+        generateValue: true
